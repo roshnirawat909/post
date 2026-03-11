@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Profile</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-5 space-y-10">
+
+  <!-- Main Card -->
+  <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <div class="flex justify-end mb-2">
+      <a href="/logout" class="text-blue-500 hover:underline text-sm">Logout</a>
+    </div>
+
+    <div class="  profile  flex items-start gap-3">
+      <div class="dp w-10 h-10 rounded-md overflow-hidden ">
+<img class="w-full h-full object-fill" src="/images/upload/<%= user.profilePic || 'default.jpg' %>" alt="">
+      </div>
+
+      <h2 class="text-2xl font-bold mb-4 text-center text-gray-800">
+        Hello! <span class="text-gray-400 capitalize">
+          <%= user.name %>
+        </span> ✋
+      </h2>
+    </div>
+
+    <h4 class="text-center text-gray-600 mb-4">You can create a new post.</h4>
+
+    <form action="/post" method="post" class="space-y-4">
+      <textarea name="content" class="w-full p-3 border border-gray-300 rounded-md text-black resize-none" rows="4"
+        placeholder="What's on your mind?" required></textarea>
+      <input type="submit" value="Create New Post"
+        class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 cursor-pointer" />
+    </form>
+  </div>
+
+  <!-- Posts Section -->
+  <div class="w-full max-w-md">
+    <h3 class="text-xl font-semibold text-gray-800 mb-4">Your Posts</h3>
+    <div class="space-y-4">
+      <% user.posts.slice().reverse().forEach(post=> { %>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h4 class="font-bold text-gray-700">
+            <%= user.username %>
+          </h4>
+          <p class="text-gray-600 mt-2">
+            <%= post.content %>
+          </p>
+          <small class="text-gray-400 block mt-1">
+            <%= new Date(post.createdAt).toLocaleString() %>
+          </small>
+          <small class="text-gray-500 block mt-1">Liked by <%= post.likes.length %> users</small>
+
+          <div class="flex space-x-4 mt-4">
+            <a href="/like/<%= post._id %>" class="text-blue-500 hover:underline">
+              <%= post.likes.map(id=> id.toString()).includes(user._id.toString()) ? "Unlike" : "Like" %>
+            </a>
+            <a href="/edit/<%= post._id %>" class="text-blue-500 hover:underline">Edit</a>
+          </div>
+        </div>
+        <% }); %>
+    </div>
+  </div>
+
+</body>
+
+</html>
