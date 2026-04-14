@@ -9,10 +9,7 @@ const mongoose = require('mongoose');
 const cloudinaryUpload = require('./config/CloudinaryConfig');
 
 // --- Mongoose Connection ---
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/miniApp', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/miniApp')
 .then(() => console.log('MongoDB connected successfully!'))
 .catch(err => console.log('MongoDB connection error:', err));
 
@@ -57,6 +54,10 @@ app.post('/upload', isLoggedIn, cloudinaryUpload.single("image"), async (req, re
   user.profilePic = req.file.path;  // Cloudinary returns full URL
   await user.save();
   res.redirect("/profile");
+});
+
+app.get('/register', (req, res) => {
+  res.render("register");
 });
 
 app.get('/login', (req, res) => {
@@ -146,7 +147,7 @@ app.post('/register', async (req, res) => {
     );
 
     res.cookie("token", token, { httpOnly: true });
-    res.redirect("/login");
+    res.redirect("/profile");
   } catch (err) {
     console.error("User creation error:", err);
     res.status(500).send("Error creating user");
